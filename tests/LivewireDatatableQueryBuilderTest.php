@@ -21,33 +21,26 @@ class LivewireDatatableQueryBuilderTest extends TestCase
 
         $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `id` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
         $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `subject` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
         $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `subject` asc', $subject->getQuery()->toSql());
-    }
 
-    /** @test */
-    public function it_creates_a_query_builder_for_base_multisortable_columns()
-    {
-        factory(DummyModel::class)->create();
-
-        $subject = new LivewireDatatable(1);
+        $subject->sort = [0];
         $subject->multisortable = true;
-        $subject->mount(DummyModel::class, ['id', 'subject', 'category']);
 
-        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `id` desc', $subject->getQuery()->toSql());
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `id` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
-        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `id` desc, `subject` desc', $subject->getQuery()->toSql());
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `id` desc, `subject` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
-        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `id` desc, `subject` asc', $subject->getQuery()->toSql());
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `id` desc, `subject` asc', $subject->getQuery()->toSql());
     }
 
     /** @test */
@@ -60,12 +53,12 @@ class LivewireDatatableQueryBuilderTest extends TestCase
 
         $this->assertEquals('select "dummy_models"."id" as "id", "dummy_has_one_models"."name" as "dummy_has_one.name" from "dummy_models" left join "dummy_has_one_models" on "dummy_has_one_models"."dummy_model_id" = "dummy_models"."id" order by `id` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
         $subject->forgetComputed();
 
         $this->assertEquals('select "dummy_models"."id" as "id", "dummy_has_one_models"."name" as "dummy_has_one.name" from "dummy_models" left join "dummy_has_one_models" on "dummy_has_one_models"."dummy_model_id" = "dummy_models"."id" order by dummy_has_one_models.name desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
         $subject->forgetComputed();
 
         $this->assertEquals('select "dummy_models"."id" as "id", "dummy_has_one_models"."name" as "dummy_has_one.name" from "dummy_models" left join "dummy_has_one_models" on "dummy_has_one_models"."dummy_model_id" = "dummy_models"."id" order by dummy_has_one_models.name asc', $subject->getQuery()->toSql());
@@ -94,11 +87,11 @@ class LivewireDatatableQueryBuilderTest extends TestCase
 
         $this->assertEquals('select (select group_concat(REPLACE(DISTINCT(dummy_has_many_models.name), \'\', \'\') , \', \') from "dummy_has_many_models" where "dummy_models"."id" = "dummy_has_many_models"."dummy_model_id") as `dummy_has_many.name`, "dummy_models"."id" as "id" from "dummy_models" order by `id` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
         $this->assertEquals('select (select group_concat(REPLACE(DISTINCT(dummy_has_many_models.name), \'\', \'\') , \', \') from "dummy_has_many_models" where "dummy_models"."id" = "dummy_has_many_models"."dummy_model_id") as `dummy_has_many.name`, "dummy_models"."id" as "id" from "dummy_models" order by `dummy_has_many.name` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
         $this->assertEquals('select (select group_concat(REPLACE(DISTINCT(dummy_has_many_models.name), \'\', \'\') , \', \') from "dummy_has_many_models" where "dummy_models"."id" = "dummy_has_many_models"."dummy_model_id") as `dummy_has_many.name`, "dummy_models"."id" as "id" from "dummy_models" order by `dummy_has_many.name` asc', $subject->getQuery()->toSql());
     }
@@ -113,11 +106,11 @@ class LivewireDatatableQueryBuilderTest extends TestCase
 
         $this->assertEquals('select (select COALESCE(avg(dummy_has_many_models.id),0) from "dummy_has_many_models" where "dummy_models"."id" = "dummy_has_many_models"."dummy_model_id") as `dummy_has_many.id:avg`, "dummy_models"."id" as "id" from "dummy_models" order by `id` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
         $this->assertEquals('select (select COALESCE(avg(dummy_has_many_models.id),0) from "dummy_has_many_models" where "dummy_models"."id" = "dummy_has_many_models"."dummy_model_id") as `dummy_has_many.id:avg`, "dummy_models"."id" as "id" from "dummy_models" order by `dummy_has_many.id:avg` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
         $this->assertEquals('select (select COALESCE(avg(dummy_has_many_models.id),0) from "dummy_has_many_models" where "dummy_models"."id" = "dummy_has_many_models"."dummy_model_id") as `dummy_has_many.id:avg`, "dummy_models"."id" as "id" from "dummy_models" order by `dummy_has_many.id:avg` asc', $subject->getQuery()->toSql());
     }
@@ -146,12 +139,12 @@ class LivewireDatatableQueryBuilderTest extends TestCase
 
         $this->assertEquals('select "dummy_has_many_models"."id" as "id", "dummy_models"."name" as "dummy_model.name" from "dummy_has_many_models" left join "dummy_models" on "dummy_has_many_models"."dummy_model_id" = "dummy_models"."id" order by `id` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
         $subject->forgetComputed();
 
         $this->assertEquals('select "dummy_has_many_models"."id" as "id", "dummy_models"."name" as "dummy_model.name" from "dummy_has_many_models" left join "dummy_models" on "dummy_has_many_models"."dummy_model_id" = "dummy_models"."id" order by dummy_models.name desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
         $subject->forgetComputed();
 
         $this->assertEquals('select "dummy_has_many_models"."id" as "id", "dummy_models"."name" as "dummy_model.name" from "dummy_has_many_models" left join "dummy_models" on "dummy_has_many_models"."dummy_model_id" = "dummy_models"."id" order by dummy_models.name asc', $subject->getQuery()->toSql());
@@ -198,11 +191,11 @@ class LivewireDatatableQueryBuilderTest extends TestCase
 
         $this->assertEquals('select (select group_concat(REPLACE(DISTINCT(dummy_belongs_to_many_models.name), \'\', \'\') , \', \') from "dummy_belongs_to_many_models" inner join "dummy_belongs_to_many_model_dummy_model" on "dummy_belongs_to_many_models"."id" = "dummy_belongs_to_many_model_dummy_model"."dummy_belongs_to_many_model_id" where "dummy_models"."id" = "dummy_belongs_to_many_model_dummy_model"."dummy_model_id" and "dummy_belongs_to_many_models"."deleted_at" is null) as `dummy_belongs_to_many.name`, "dummy_models"."id" as "id" from "dummy_models" order by `id` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
         $this->assertEquals('select (select group_concat(REPLACE(DISTINCT(dummy_belongs_to_many_models.name), \'\', \'\') , \', \') from "dummy_belongs_to_many_models" inner join "dummy_belongs_to_many_model_dummy_model" on "dummy_belongs_to_many_models"."id" = "dummy_belongs_to_many_model_dummy_model"."dummy_belongs_to_many_model_id" where "dummy_models"."id" = "dummy_belongs_to_many_model_dummy_model"."dummy_model_id" and "dummy_belongs_to_many_models"."deleted_at" is null) as `dummy_belongs_to_many.name`, "dummy_models"."id" as "id" from "dummy_models" order by `dummy_belongs_to_many.name` desc', $subject->getQuery()->toSql());
 
-        $subject->sort([1]);
+        $subject->sort(1);
 
         $this->assertEquals('select (select group_concat(REPLACE(DISTINCT(dummy_belongs_to_many_models.name), \'\', \'\') , \', \') from "dummy_belongs_to_many_models" inner join "dummy_belongs_to_many_model_dummy_model" on "dummy_belongs_to_many_models"."id" = "dummy_belongs_to_many_model_dummy_model"."dummy_belongs_to_many_model_id" where "dummy_models"."id" = "dummy_belongs_to_many_model_dummy_model"."dummy_model_id" and "dummy_belongs_to_many_models"."deleted_at" is null) as `dummy_belongs_to_many.name`, "dummy_models"."id" as "id" from "dummy_models" order by `dummy_belongs_to_many.name` asc', $subject->getQuery()->toSql());
     }

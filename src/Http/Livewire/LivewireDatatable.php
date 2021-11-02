@@ -652,11 +652,11 @@ class LivewireDatatable extends Component
     /**
      * Order the table by a given column index starting from 0.
      *
-     * @param  array  $columns  which columns to sort by
+     * @param  int  $index  which column to sort by
      * @param  string|null  $direction  needs to be 'asc' or 'desc'. set to null to toggle the current direction.
      * @return void
      */
-    public function sort(array $columns, $direction = null)
+    public function sort($index, $direction = null)
     {
         if (! in_array($direction, [null, 'asc', 'desc'])) {
             throw new \Exception("Invalid direction $direction given in sort() method. Allowed values: asc, desc.");
@@ -664,21 +664,19 @@ class LivewireDatatable extends Component
 
         if ($this->multisortable){
             $direction = $direction ?? 'desc';
-            foreach ($columns as $column){
-                $direction = $this->freshColumns[$column]['defaultSort'] ?? $direction;
-                $columnName = "{$this->freshColumns[$column]['name']}";
+                $direction = $this->freshColumns[$index]['defaultSort'] ?? $direction;
+                $columnName = "{$this->freshColumns[$index]['name']}";
+
                 if(in_array("$columnName|$direction", $this->sort)){
                     $toggledDirection = $this->toggleDirection($direction);
-                    $this->sort[$column] = "$columnName|$toggledDirection";
+                    $this->sort[$index] = "$columnName|$toggledDirection";
                 }else{
                     array_push($this->sort, "$columnName|$direction");
                 }
-            }
             $this->page = 1;
             return;
-        }
+            }
 
-        $index = $columns[0];
             if (in_array($index, $this->sort)) {
                 if ($direction === null) { // toggle direction
                     $this->direction = ! $this->direction;
