@@ -1383,12 +1383,15 @@ class LivewireDatatable extends Component
                     $index = $sort;
                     if (!is_numeric($index)
                         && !is_null(($index = optional(collect($this->freshColumns)->where('name', Str::before($sort,'|')))->keys()->first()))){
-                          $sortString = ($columnName = Str::after($this->getSortString($index), '.')).' '. ($direction = $this->columnSortDirection($sort));
+                          $columnName = Str::after($this->getSortString($index), '.');
+                          $direction = $this->columnSortDirection($sort);
                     }else{
                         $direction = $this->freshColumns[$index]['defaultSort'] ?? 'desc';
-                        $sortString = ($columnName = $this->getSortString($index)).' '.$direction;
+                        $columnName = $this->getSortString($index);
                     }
-                    $this->query->orderByRaw($sortString);
+
+//                    $direction = $this->toggleDirection($direction);
+                    $this->query->orderByRaw($columnName.' '.$direction);
                 }
                 return $this;
             }
