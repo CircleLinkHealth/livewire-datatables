@@ -663,29 +663,22 @@ class LivewireDatatable extends Component
         }
 
         if ($this->multisortable){
-            $direction = $direction ?? 'desc';
-                $direction = $this->freshColumns[$index]['defaultSort'] ?? $direction;
-                $columnName = "{$this->freshColumns[$index]['name']}";
-
-                if(in_array("$columnName|$direction", $this->sort)){
-                    $toggledDirection = $this->toggleDirection($direction);
-                    $this->sort[$index] = "$columnName|$toggledDirection";
-                }else{
-                    array_push($this->sort, "$columnName|$direction");
-                }
+            if (! in_array($index, $this->sort)){
+                array_push($this->sort, $index);
+            }
             $this->page = 1;
             return;
-            }
+        }
 
-            if (in_array($index, $this->sort)) {
-                if ($direction === null) { // toggle direction
-                    $this->direction = ! $this->direction;
-                } else {
-                    $this->direction = $direction === 'desc' ? false : true;
-                }
+        if (in_array($index, $this->sort)) {
+            if ($direction === null) { // toggle direction
+                $this->direction = ! $this->direction;
             } else {
-                $this->sort = [$index];
+                $this->direction = $direction === 'desc' ? false : true;
             }
+        } else {
+            $this->sort = [$index];
+        }
 
         $this->page = 1;
 
@@ -1386,27 +1379,27 @@ class LivewireDatatable extends Component
     {
         if (!empty($this->sort)){
             if ($this->multisortable){
-                foreach (collect($this->sort)->toArray() as $sort){
-                    if (!is_numeric($sort)
-                        && !is_null(($index = optional(collect($this->freshColumns)->where('name', Str::before($sort,'|')))->keys()->last()))){
+                foreach ($this->sort as $sort){
+                    $index = $sort;
+                    if (!is_numeric($index)
+                        && !is_null(($index = optional(collect($this->freshColumns)->where('name', Str::before($sort,'|')))->keys()->first()))){
                           $sortString = ($columnName = Str::after($this->getSortString($index), '.')).' '. ($direction = $this->columnSortDirection($sort));
                     }else{
-                        $direction = $this->freshColumns[$sort]['defaultSort'] ?? 'desc';
-                        $sortString = ($columnName = $this->getSortString($sort)).' '.$direction;
+                        $direction = $this->freshColumns[$index]['defaultSort'] ?? 'desc';
+                        $sortString = ($columnName = $this->getSortString($index)).' '.$direction;
                     }
                     $this->query->orderByRaw($sortString);
                 }
                 return $this;
             }
 
-            foreach (collect($this->sort)->toArray() as $column){
-                if(isset($this->freshColumns[$column]) && $this->freshColumns[$column]['name']){
-                    $direction = $this->direction ? 'asc' : 'desc';
-                    $this->query->orderByRaw($this->getSortString($column).' '.$direction);
-                }
+            $index = $this->sort[0];
+            if(isset($this->freshColumns[$index]) && $this->freshColumns[$index]['name']){
+                $direction = $this->direction ? 'asc' : 'desc';
+                $this->query->orderByRaw($this->getSortString($index).' '.$direction);
             }
-
         }
+
         return $this;
     }
 
