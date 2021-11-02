@@ -663,14 +663,15 @@ class LivewireDatatable extends Component
         }
 
         if ($this->multisortable){
+            $direction = $direction ?? 'desc';
             foreach ($columns as $column){
-                if (is_numeric($column)){
-                    $direction = $this->freshColumns[$column]['defaultSort'] ?? $direction;
-                    $column = "{$this->freshColumns[$column]['name']}|$direction";
-                }
-
-                if (!in_array($column, $this->sort)){
-                    array_push($this->sort, $column);
+                $direction = $this->freshColumns[$column]['defaultSort'] ?? $direction;
+                $columnName = "{$this->freshColumns[$column]['name']}";
+                if(in_array("$columnName|$direction", $this->sort)){
+                    $toggledDirection = $this->toggleDirection($direction);
+                    $this->sort[$column] = "$columnName|$toggledDirection";
+                }else{
+                    array_push($this->sort, "$columnName|$direction");
                 }
             }
             $this->page = 1;
@@ -1620,5 +1621,13 @@ class LivewireDatatable extends Component
     {
         // Override this method with your own method for adding classes to a cell
         return config('livewire-datatables.default_classes.cell', 'text-sm text-gray-900');
+    }
+
+    public function toggleDirection(string $direction):string
+    {
+        switch ($direction){
+            case $direction === 'desc' : return  'asc';
+            default : return 'desc';
+        }
     }
 }
