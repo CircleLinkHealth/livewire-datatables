@@ -637,13 +637,17 @@ class LivewireDatatable extends Component
         $this->page = 1;
     }
 
-    public function columnSortDirection(string $sortString): string
+    public function getColumnDirection(string $sortString): string
     {
+        $direction = 'desc';
         if (Str::contains($sortString, '|')) {
-            return Str::after($sortString, '|');
+            $direction = Str::after($sortString, '|');
+            if ($direction !== 'asc' || $direction !== 'desc') {
+                throw new \Exception("Invalid direction $direction given in sanitizeColumnSort() method. Allowed values: asc, desc.");
+            }
         }
 
-        return 'desc';
+        return $direction;
     }
 
     /**
@@ -660,15 +664,15 @@ class LivewireDatatable extends Component
         }
 
         if ($this->multisortable) {
-            if (! in_array($index . '|' . $this->columnSortDirection($index), $this->sort)) {
+            if (!in_array($index . '|' . $this->getColumnDirection($index), $this->sort)) {
                 if ($direction === null) {
-                    $sort = $index . '|' . $this->columnSortDirection($index);
+                    $sort = $index . '|' . $this->getColumnDirection($index);
                 } else {
                     $sort = $index . '|' . $direction;
                 }
                 array_push($this->sort, $sort);
-            }else {
-                $direction = $direction ?? $this->columnSortDirection($index);
+            } else {
+                $direction = $direction ?? $this->getColumnDirection($index);
                 $this->sort[$index] = $index . '|' . $this->toggleDirection($direction);
             }
 
@@ -676,9 +680,9 @@ class LivewireDatatable extends Component
             return;
         }
 
-        if (in_array($index . '|' . $this->columnSortDirection($index), $this->sort)) {
+        if (in_array($index . '|' . $this->getColumnDirection($index), $this->sort)) {
             if ($direction === null) {
-                $sort = [$index . '|' . $this->toggleDirection($this->columnSortDirection($index))];
+                $sort = [$index . '|' . $this->toggleDirection($this->getColumnDirection($index))];
             } else {
                 $sort = [$index . '|' . $direction];
             }
