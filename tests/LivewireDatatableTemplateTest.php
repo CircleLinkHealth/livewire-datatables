@@ -165,8 +165,7 @@ class LivewireDatatableTemplateTest extends TestCase
         $this->assertEquals('Mediconesystems\LivewireDatatables\Tests\Models\DummyModel', $subject->model);
         $this->assertIsArray($subject->columns);
 
-        $this->assertEquals([1], $subject->sort);
-        $this->assertTrue($subject->direction);
+        $this->assertEquals(['1|asc'], $subject->sort);
     }
 
     /** @test */
@@ -186,9 +185,9 @@ class LivewireDatatableTemplateTest extends TestCase
         $this->assertEquals('Mediconesystems\LivewireDatatables\Tests\Models\DummyModel', $subject->model);
         $this->assertIsArray($subject->columns);
 
-        $this->assertEquals([1,2], $subject->sort);
-        $this->assertEquals($subject->freshColumns[1]['defaultSort'],"asc");
-        $this->assertEquals($subject->freshColumns[2]['defaultSort'],"desc");
+        $this->assertEquals(['1|asc', '2|desc'], $subject->sort);
+        $this->assertEquals($subject->freshColumns[1]['defaultSort'], "asc");
+        $this->assertEquals($subject->freshColumns[2]['defaultSort'], "desc");
         $this->assertNull($subject->direction);
     }
 

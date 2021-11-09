@@ -42,8 +42,7 @@ class LivewireDatatableClassTest extends TestCase
 
         $this->assertIsArray($subject->columns);
 
-        $this->assertEquals([0], $subject->sort);
-        $this->assertFalse($subject->direction);
+        $this->assertEquals(['0|desc'], $subject->sort);
     }
 
     /** @test */
@@ -73,8 +72,7 @@ class LivewireDatatableClassTest extends TestCase
         $this->assertEquals('Advanced beet growing', $subject->results->getCollection()[1]->subject);
 
         $subject->forgetComputed();
-        $subject->sort = [1];
-        $subject->direction = true;
+        $subject->sort = ['1|asc'];
 
         $this->assertEquals('Advanced beet growing', $subject->results->getCollection()[0]->subject);
         $this->assertEquals('Beet growing for noobs', $subject->results->getCollection()[1]->subject);
@@ -83,10 +81,10 @@ class LivewireDatatableClassTest extends TestCase
     /** @test */
     public function it_can_order_results_for_multiple_columns()
     {
-        factory(DummyModel::class)->create(['subject' => 'Beet growing for noobs',  'category' => 'A']);
-        factory(DummyModel::class)->create(['subject' => 'Advanced beet growing',   'category' => 'A']);
-        factory(DummyModel::class)->create(['subject' => 'Advanced beet growing',   'category' => 'B']);
-        factory(DummyModel::class)->create(['subject' => 'Beet growing for noobs',  'category' => 'B']);
+        factory(DummyModel::class)->create(['subject' => 'Beet growing for noobs', 'category' => 'A']);
+        factory(DummyModel::class)->create(['subject' => 'Advanced beet growing', 'category' => 'A']);
+        factory(DummyModel::class)->create(['subject' => 'Advanced beet growing', 'category' => 'B']);
+        factory(DummyModel::class)->create(['subject' => 'Beet growing for noobs', 'category' => 'B']);
 
         $subject = new DummyTable(1);
 
