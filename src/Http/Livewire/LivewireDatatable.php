@@ -662,6 +662,7 @@ class LivewireDatatable extends Component
         if (!in_array($direction, [null, 'asc', 'desc'])) {
             throw new \Exception("Invalid direction $direction given in sort() method. Allowed values: asc, desc.");
         }
+        $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
 
         if ($this->multisortable) {
             if (!in_array($index . '|' . $this->getColumnDirection($index), $this->sort)) {
@@ -670,13 +671,15 @@ class LivewireDatatable extends Component
                 } else {
                     $sort = $index . '|' . $direction;
                 }
-                array_push($this->sort, $sort);
+                array_unshift($this->sort, $sort);
             } else {
                 $direction = $direction ?? $this->getColumnDirection($index);
-                $this->sort[$index] = $index . '|' . $this->toggleDirection($direction);
+                $this->sort[array_search($index . '|' . $this->getColumnDirection($index), $this->sort)] =
+                    $index . '|' . $this->toggleDirection($direction);
             }
 
             $this->page = 1;
+            session()->put([$key . $this->name . '_multisort' => implode(',', $this->sort)]);
             return;
         }
 
@@ -692,11 +695,8 @@ class LivewireDatatable extends Component
         }
 
         $this->sort = $sort;
-
-
         $this->page = 1;
 
-        $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
         session()->put([$key . $this->name . '_sort' => $this->sort, $key . $this->name . '_direction' => Str::after($this->sort[0], '|')]);
     }
 

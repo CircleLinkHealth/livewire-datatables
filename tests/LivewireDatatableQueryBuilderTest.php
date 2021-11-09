@@ -36,11 +36,11 @@ class LivewireDatatableQueryBuilderTest extends TestCase
 
         $subject->sort(1);
 
-        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `id` desc, `subject` desc', $subject->getQuery()->toSql());
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `subject` desc, `id` desc', $subject->getQuery()->toSql());
 
         $subject->sort(1);
 
-        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `id` desc, `subject` asc', $subject->getQuery()->toSql());
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject" from "dummy_models" order by `subject` asc, `id` desc', $subject->getQuery()->toSql());
     }
 
     /** @test */
