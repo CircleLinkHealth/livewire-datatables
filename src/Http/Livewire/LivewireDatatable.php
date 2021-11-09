@@ -476,7 +476,7 @@ class LivewireDatatable extends Component
             return;
         }
 
-        if(! $this->multisortable){
+        if (!$this->multisortable) {
             $this->sort = session()->get($this->sessionStorageKey() . $this->name . '_sort', $this->sort);
             return;
         }
@@ -500,7 +500,7 @@ class LivewireDatatable extends Component
             return;
         }
 
-        if(! $this->multisortable){
+        if (!$this->multisortable) {
             session()->put([$this->sessionStorageKey() . $this->name . '_sort' => $this->sort]);
             return;
         }
@@ -653,7 +653,7 @@ class LivewireDatatable extends Component
         $direction = 'desc';
         if (Str::contains($sortString, '|')) {
             $direction = Str::after($sortString, '|');
-            if ($direction !== 'asc' || $direction !== 'desc') {
+            if ($direction !== 'asc' && $direction !== 'desc') {
                 throw new \Exception("Invalid direction $direction given in sanitizeColumnSort() method. Allowed values: asc, desc.");
             }
         }
@@ -676,7 +676,9 @@ class LivewireDatatable extends Component
         $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
 
         if ($this->multisortable) {
-            if (!in_array($index . '|' . $this->getColumnDirection($index), $this->sort)) {
+            if (($valueInSort = collect($this->sort)->filter(function ($q) use ($index) {
+                return Str::before($q, '|') == $index;
+            }))->isEmpty()) {
                 if ($direction === null) {
                     $sort = $index . '|' . $this->getColumnDirection($index);
                 } else {
@@ -684,9 +686,16 @@ class LivewireDatatable extends Component
                 }
                 array_unshift($this->sort, $sort);
             } else {
-                $direction = $direction ?? $this->getColumnDirection($index);
-                $this->sort[array_search($index . '|' . $this->getColumnDirection($index), $this->sort)] =
-                    $index . '|' . $this->toggleDirection($direction);
+                $sortIndex = $valueInSort->keys()->first();
+                if($direction === null){
+                    $direction =  $this->getColumnDirection($this->sort[$sortIndex]);
+                    $this->sort[$sortIndex] =
+                        $index . '|' . $this->toggleDirection($direction);
+                }else{
+                    $this->sort[$sortIndex] =
+                        $index . '|' . $direction;
+                }
+
             }
 
             $this->page = 1;
