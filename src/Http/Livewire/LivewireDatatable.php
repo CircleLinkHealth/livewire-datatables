@@ -689,8 +689,8 @@ class LivewireDatatable extends Component
                 $sortIndex = $valueInSort->keys()->first();
                 if($direction === null){
                     $direction =  $this->getColumnDirection($this->sort[$sortIndex]);
-                    $this->sort[$sortIndex] =
-                        $index . '|' . $this->toggleDirection($direction);
+                    unset($this->sort[$sortIndex]);
+                    array_unshift($this->sort, $index . '|' . $this->toggleDirection($direction));
                 }else{
                     $this->sort[$sortIndex] =
                         $index . '|' . $direction;
