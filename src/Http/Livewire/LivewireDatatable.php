@@ -476,7 +476,13 @@ class LivewireDatatable extends Component
             return;
         }
 
-        $this->sort = session()->get($this->sessionStorageKey() . $this->name . '_sort', $this->sort);
+        if(! $this->multisortable){
+            $this->sort = session()->get($this->sessionStorageKey() . $this->name . '_sort', $this->sort);
+            return;
+        }
+
+        session()->put([$this->sessionStorageKey() . $this->name . '_multisort' => implode(',', $this->sort)]);
+
     }
 
     public function getSessionStoredPerPage()
@@ -494,7 +500,12 @@ class LivewireDatatable extends Component
             return;
         }
 
-        session()->put([$this->sessionStorageKey() . $this->name . '_sort' => $this->sort, $this->sessionStorageKey() . $this->name . '_direction' => $this->direction]);
+        if(! $this->multisortable){
+            session()->put([$this->sessionStorageKey() . $this->name . '_sort' => $this->sort]);
+            return;
+        }
+
+        session()->put([$this->sessionStorageKey() . $this->name . '_multisort' => implode(',', $this->sort)]);
     }
 
     public function setSessionStoredFilters()
