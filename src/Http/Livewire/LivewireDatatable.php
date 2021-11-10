@@ -676,7 +676,7 @@ class LivewireDatatable extends Component
         $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
 
         if ($this->multisortable) {
-            if (($valueInSort = collect($this->sort)->filter(function ($q) use ($index) {
+            if (($valueIndexInSort = collect($this->sort)->filter(function ($q) use ($index) {
                 return Str::before($q, '|') == $index;
             }))->isEmpty()) {
                 if ($direction === null) {
@@ -686,7 +686,7 @@ class LivewireDatatable extends Component
                 }
                 array_unshift($this->sort, $sort);
             } else {
-                $sortIndex = $valueInSort->keys()->first();
+                $sortIndex = $valueIndexInSort->keys()->first();
                 if($direction === null){
                     $direction =  $this->getColumnDirection($this->sort[$sortIndex]);
                     unset($this->sort[$sortIndex]);
