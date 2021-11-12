@@ -692,7 +692,6 @@ class LivewireDatatable extends Component
                     unset($this->sort[$sortIndex]);
                     $sort = $index . '|' . $toggledDirection;
                     if ($toggledDirection === null) {
-                        unset($this->query->getQuery()->orders[$sortIndex]);
                         return;
                     }
                     array_unshift($this->sort, $sort);
