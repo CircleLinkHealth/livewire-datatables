@@ -1659,6 +1659,9 @@ class LivewireDatatable extends Component
     public function toggleMultisortableDirection(string $direction): ?string
     {
         $directionState = array_search($direction, ($directions = self::ORDER_BY_DIRECTION_STATES));
+        if($directionState === false){
+            throw new Exception('Undefined direction index in toggleMultisortableDirection()');
+        }
         return $directions[$directionState + 1];
     }
 }
