@@ -20,7 +20,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Mediconesystems\LivewireDatatables\Column;
 use Mediconesystems\LivewireDatatables\ColumnSet;
 use Mediconesystems\LivewireDatatables\Exports\DatatableExport;
-use Mediconesystems\LivewireDatatables\Tests\Classes\MultisortDatatable;
 use Mediconesystems\LivewireDatatables\Traits\WithCallbacks;
 use Mediconesystems\LivewireDatatables\Traits\WithPresetDateFilters;
 use Mediconesystems\LivewireDatatables\Traits\WithPresetTimeFilters;
@@ -30,6 +29,7 @@ class LivewireDatatable extends Component
     use WithPagination, WithCallbacks, WithPresetDateFilters, WithPresetTimeFilters;
 
     const SEPARATOR = '|**lwdt**|';
+    const ORDER_BY_DIRECTION_STATES = ['desc', 'asc', null];
     public $model;
     public $columns;
     public $search;
@@ -670,7 +670,7 @@ class LivewireDatatable extends Component
      */
     public function sort($index, $direction = null)
     {
-        if (!in_array($direction, [null, 'asc', 'desc'])) {
+        if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
             throw new \Exception("Invalid direction $direction given in sort() method. Allowed values: asc, desc.");
         }
         $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
@@ -687,15 +687,19 @@ class LivewireDatatable extends Component
                 array_unshift($this->sort, $sort);
             } else {
                 $sortIndex = $valueIndexInSort->keys()->first();
-                if($direction === null){
-                    $direction =  $this->getColumnDirection($this->sort[$sortIndex]);
+                if ($direction === null) {
+                    $toggledDirection = $this->toggleMultisortableDirection($this->getColumnDirection($this->sort[$sortIndex]));
                     unset($this->sort[$sortIndex]);
-                    array_unshift($this->sort, $index . '|' . $this->toggleDirection($direction));
-                }else{
+                    $sort = $index . '|' . $toggledDirection;
+                    if ($toggledDirection === null) {
+                        unset($this->query->getQuery()->orders[$sortIndex]);
+                        return;
+                    }
+                    array_unshift($this->sort, $sort);
+                } else {
                     $this->sort[$sortIndex] =
                         $index . '|' . $direction;
                 }
-
             }
 
             $this->page = 1;
@@ -705,7 +709,7 @@ class LivewireDatatable extends Component
 
         if (in_array($index . '|' . $this->getColumnDirection($index), $this->sort)) {
             if ($direction === null) {
-                $sort = [$index . '|' . $this->toggleDirection($this->getColumnDirection($index))];
+                $sort = [$index . '|' . $this->toggleSortDirection($this->getColumnDirection($index))];
             } else {
                 $sort = [$index . '|' . $direction];
             }
@@ -1639,13 +1643,23 @@ class LivewireDatatable extends Component
         return config('livewire-datatables.default_classes.cell', 'text-sm text-gray-900');
     }
 
-    public function toggleDirection(string $direction): string
+    public function toggleSortDirection(string $direction): string
     {
+        if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+            throw new \Exception("Invalid direction $direction given in toggleSortDirection() method. Allowed values: asc, desc.");
+        }
+
         switch ($direction) {
             case $direction === 'desc' :
                 return 'asc';
             default :
                 return 'desc';
         }
+    }
+
+    public function toggleMultisortableDirection(string $direction): ?string
+    {
+        $directionState = array_search($direction, ($directions = self::ORDER_BY_DIRECTION_STATES));
+        return $directions[$directionState + 1];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Mediconesystems\LivewireDatatables\Tests;
 
+use Illuminate\Contracts\Session\Session;
 use Mediconesystems\LivewireDatatables\Http\Livewire\LivewireDatatable;
 use Mediconesystems\LivewireDatatables\Tests\Models\DummyBelongsToManyModel;
 use Mediconesystems\LivewireDatatables\Tests\Models\DummyHasManyModel;
@@ -10,6 +11,31 @@ use Mediconesystems\LivewireDatatables\Tests\Models\DummyModel;
 
 class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
 {
+    /** @test */
+    public function it_toggles_sort_status_on_each_sort_trigger()
+    {
+        factory(DummyModel::class)->create();
+
+        $subject = new LivewireDatatable(1);
+        $subject->mount(DummyModel::class, ['id', 'subject', 'category']);
+        $subject->multisortable = true;
+
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `id` desc', $subject->getQuery()->toSql());
+
+        $subject->sort(0);
+
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `id` asc', $subject->getQuery()->toSql());
+
+        $subject->sort(0);
+
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models"', $subject->getQuery()->toSql());
+
+        $subject->sort(0);
+
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `id` desc', $subject->getQuery()->toSql());
+
+    }
+
     /** @test */
     public function it_creates_a_multisortable_query_builder_for_base_columns()
     {
@@ -31,15 +57,15 @@ class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
 
         $subject->sort(1);
 
-        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `subject` desc, `id` desc', $subject->getQuery()->toSql());
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `id` desc', $subject->getQuery()->toSql());
 
         $subject->sort(2);
 
-        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `category` desc, `subject` desc, `id` desc', $subject->getQuery()->toSql());
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `category` desc, `id` desc', $subject->getQuery()->toSql());
 
         $subject->sort(1);
 
-        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `subject` asc, `category` desc, `id` desc', $subject->getQuery()->toSql());
+        $this->assertEquals('select "dummy_models"."id" as "id", "dummy_models"."subject" as "subject", "dummy_models"."category" as "category" from "dummy_models" order by `subject` desc, `category` desc, `id` desc', $subject->getQuery()->toSql());
     }
 
     /** @test */
