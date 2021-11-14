@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -676,9 +677,7 @@ class LivewireDatatable extends Component
         $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
 
         if ($this->multisortable) {
-            if (($valueIndexInSort = collect($this->sort)->filter(function ($q) use ($index) {
-                return Str::before($q, '|') == $index;
-            }))->isEmpty()) {
+            if (($valueIndexInSort = $this->getIndexesFromSort($this->sort, $index))->isEmpty()) {
                 if ($direction === null) {
                     $sort = $index . '|' . $this->getColumnDirection($index);
                 } else {
@@ -1663,5 +1662,17 @@ class LivewireDatatable extends Component
             throw new Exception('Undefined direction index in toggleMultisortableDirection()');
         }
         return $directions[$directionState + 1];
+    }
+
+    public function getIndexesFromSort(array $sort, $index): Collection
+    {
+        return collect($sort)->filter(function ($q) use ($index) {
+            return $this->getIndexFromValue($q)  == $index;
+        });
+    }
+
+    public function getIndexFromValue($q): ?int
+    {
+        return (int) Str::before($q, '|');
     }
 }
