@@ -687,7 +687,7 @@ class LivewireDatatable extends Component
             } else {
                 $sortIndex = $columnsWithDirection->keys()->first();
                 if ($direction === null) {
-                    $toggledDirection = $this->toggleMultisortableDirection($this->getColumnDirection($this->sort[$sortIndex]));
+                    $toggledDirection = $this->toggleMultisortDirection($this->getColumnDirection($this->sort[$sortIndex]));
                     unset($this->sort[$sortIndex]);
                     $sort = $index . '|' . $toggledDirection;
                     if ($toggledDirection === null) {
@@ -1655,11 +1655,11 @@ class LivewireDatatable extends Component
         }
     }
 
-    public function toggleMultisortableDirection(string $direction): ?string
+    public function toggleMultisortDirection(string $direction): ?string
     {
         $directionState = array_search($direction, ($directions = self::ORDER_BY_DIRECTION_STATES));
         if($directionState === false){
-            throw new Exception('Undefined direction index in toggleMultisortableDirection()');
+            throw new Exception('Undefined direction index in togglemultisortDirection()');
         }
         return $directions[$directionState + 1];
     }

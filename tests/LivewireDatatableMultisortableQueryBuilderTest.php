@@ -9,7 +9,7 @@ use Mediconesystems\LivewireDatatables\Tests\Models\DummyHasManyModel;
 use Mediconesystems\LivewireDatatables\Tests\Models\DummyHasOneModel;
 use Mediconesystems\LivewireDatatables\Tests\Models\DummyModel;
 
-class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
+class LivewireDatatableMultisortQueryBuilderTest extends TestCase
 {
     /** @test */
     public function it_toggles_sort_status_on_each_sort_trigger()
@@ -37,7 +37,7 @@ class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_a_multisortable_query_builder_for_base_columns()
+    public function it_creates_a_multisort_query_builder_for_base_columns()
     {
         factory(DummyModel::class)->create();
 
@@ -69,7 +69,7 @@ class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_a_multisortable_query_builder_for_has_one_relation_columns()
+    public function it_creates_a_multisort_query_builder_for_has_one_relation_columns()
     {
         factory(DummyModel::class)->create()->dummy_has_one()->save(factory(DummyHasOneModel::class)->make());
 
@@ -93,7 +93,7 @@ class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_a_multisortable_query_builder_for_has_many_relation_columns()
+    public function it_creates_a_multisort_query_builder_for_has_many_relation_columns()
     {
         factory(DummyModel::class)->create()->dummy_has_many()->saveMany(factory(DummyHasManyModel::class, 2)->make());
 
@@ -117,7 +117,7 @@ class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_a_multisortable_query_builder_for_has_many_relation_column_with_specific_aggregate()
+    public function it_creates_a_multisort_query_builder_for_has_many_relation_column_with_specific_aggregate()
     {
         factory(DummyModel::class)->create()->dummy_has_many()->saveMany(factory(DummyHasManyModel::class, 2)->make());
 
@@ -137,7 +137,7 @@ class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_a_multisortable_query_builder_for_belongs_to_relation_columns()
+    public function it_creates_a_multisort_query_builder_for_belongs_to_relation_columns()
     {
         factory(DummyModel::class)->create()->dummy_has_many()->saveMany(factory(DummyHasManyModel::class, 2)->make());
 
@@ -164,7 +164,7 @@ class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_a_multisortable_query_builder_for_belongs_to_many_relation_columns()
+    public function it_creates_a_multisort_query_builder_for_belongs_to_many_relation_columns()
     {
         factory(DummyModel::class)->create()->dummy_belongs_to_many()->attach(factory(DummyBelongsToManyModel::class)->create());
 
