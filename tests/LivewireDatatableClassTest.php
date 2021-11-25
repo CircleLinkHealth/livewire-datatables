@@ -98,7 +98,7 @@ class LivewireDatatableClassTest extends TestCase
         $this->assertEquals('B', $subject->results->getCollection()[3]->category);
 
         $subject->forgetComputed();
-        $subject->multisortable = true;
+        $subject->multisort = true;
         $subject->sort = ["1|asc", "2|desc"];
 
         $this->assertEquals('Advanced beet growing', $subject->results->getCollection()[0]->subject);
@@ -143,7 +143,7 @@ class LivewireDatatableClassTest extends TestCase
         $this->assertEquals('B', $subject->results->getCollection()[3]->category);
 
         $subject->forgetComputed();
-        $subject->multisortable = true;
+        $subject->multisort = true;
         $subject->sort = ["subject|asc", "category|desc"];
 
         $this->assertEquals('Advanced beet growing', $subject->results->getCollection()[0]->subject);

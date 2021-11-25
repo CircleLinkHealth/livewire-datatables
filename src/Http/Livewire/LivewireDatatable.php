@@ -67,7 +67,7 @@ class LivewireDatatable extends Component
     public $persistSort = true;
     public $persistPerPage = true;
     public $persistFilters = true;
-    public $multisortable = false;
+    public $multisort = false;
 
     /**
      * @var array List your groups and the corresponding label (or translation) here.
@@ -477,7 +477,7 @@ class LivewireDatatable extends Component
             return;
         }
 
-        if (!$this->multisortable) {
+        if (!$this->multisort) {
             $this->sort = session()->get($this->sessionStorageKey() . $this->name . '_sort', $this->sort);
             return;
         }
@@ -501,7 +501,7 @@ class LivewireDatatable extends Component
             return;
         }
 
-        if (!$this->multisortable) {
+        if (!$this->multisort) {
             session()->put([$this->sessionStorageKey() . $this->name . '_sort' => $this->sort]);
             return;
         }
@@ -537,7 +537,7 @@ class LivewireDatatable extends Component
                 return in_array($column['type'], Column::UNSORTABLE_TYPES) || $column['hidden'];
             })->transform(function ($column, $index) {
                 return $index . '|' . 'desc';
-            })->when($this->multisortable, function ($q) {
+            })->when($this->multisort, function ($q) {
                 return $q->toArray();
             }, function ($q) {
                 return [$q->first()];
@@ -676,8 +676,8 @@ class LivewireDatatable extends Component
         }
         $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
 
-        if ($this->multisortable) {
-            if (($valueIndexInSort = $this->getIndexesFromSort($this->sort, $index))->isEmpty()) {
+        if ($this->multisort) {
+            if (($columnsWithDirection = $this->getColumnsFromSort($this->sort, $index))->isEmpty()) {
                 if ($direction === null) {
                     $sort = $index . '|' . $this->getColumnDirection($index);
                 } else {
@@ -685,7 +685,7 @@ class LivewireDatatable extends Component
                 }
                 array_unshift($this->sort, $sort);
             } else {
-                $sortIndex = $valueIndexInSort->keys()->first();
+                $sortIndex = $columnsWithDirection->keys()->first();
                 if ($direction === null) {
                     $toggledDirection = $this->toggleMultisortableDirection($this->getColumnDirection($this->sort[$sortIndex]));
                     unset($this->sort[$sortIndex]);
@@ -1664,10 +1664,10 @@ class LivewireDatatable extends Component
         return $directions[$directionState + 1];
     }
 
-    public function getIndexesFromSort(array $sort, $index): Collection
+    public function getColumnsFromSort(array $sort, $index): Collection
     {
-        return collect($sort)->filter(function ($q) use ($index) {
-            return $this->getIndexFromValue($q)  == $index;
+        return collect($sort)->filter(function ($value) use ($index) {
+            return $this->getIndexFromValue($value) == $index;
         });
     }
 
