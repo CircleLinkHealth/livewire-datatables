@@ -30,11 +30,12 @@ class LivewireDatatable extends Component
     use WithPagination, WithCallbacks, WithPresetDateFilters, WithPresetTimeFilters;
 
     const SEPARATOR = '|**lwdt**|';
-    const ORDER_BY_DIRECTION_STATES = ['desc', 'asc', null];
+    const DEFAULT_DIRECTION = 'desc';
+    const ORDER_BY_DIRECTION_STATES = [self::DEFAULT_DIRECTION, 'asc', null];
     public $model;
     public $columns;
     public $search;
-    public $sort = [];
+    public $sort;
     public $activeDateFilters = [];
     public $activeTimeFilters = [];
     public $activeSelectFilters = [];
@@ -535,12 +536,20 @@ class LivewireDatatable extends Component
             })->toArray())
             : collect($this->freshColumns)->reject(function ($column) {
                 return in_array($column['type'], Column::UNSORTABLE_TYPES) || $column['hidden'];
-            })->transform(function ($column, $index) {
-                return $index . '|' . 'desc';
-            })->when($this->multisort, function ($q) {
-                return $q->toArray();
-            }, function ($q) {
-                return [$q->first()];
+            })->transform(function ($column, $key) {
+                $direction = self::DEFAULT_DIRECTION;
+                if (is_string($this->sort)) {
+                    $direction = $this->getColumnDirection($this->sort);
+                }
+                return $key . '|' . $direction;
+            })->when($this->multisort, function ($columnIndicesWithDirection) {
+                return $columnIndicesWithDirection->toArray();
+            }, function ($columnIndicesWithDirection) {
+                if (is_int($this->sort) || is_string($this->sort)) {
+                    return [$columnIndicesWithDirection->toArray()[Str::before($this->sort, '|')]];
+                }
+
+                return [$columnIndicesWithDirection->first()];
             });
 
         $this->getSessionStoredSort();
@@ -651,10 +660,10 @@ class LivewireDatatable extends Component
 
     public function getColumnDirection(string $sortString): string
     {
-        $direction = 'desc';
+        $direction = self::DEFAULT_DIRECTION;
         if (Str::contains($sortString, '|')) {
             $direction = Str::after($sortString, '|');
-            if ($direction !== 'asc' && $direction !== 'desc') {
+            if ($direction !== 'asc' && $direction !== self::DEFAULT_DIRECTION) {
                 throw new \Exception("Invalid direction $direction given in sanitizeColumnSort() method. Allowed values: asc, desc.");
             }
         }
@@ -712,7 +721,7 @@ class LivewireDatatable extends Component
                 $sort = [$index . '|' . $direction];
             }
         } else {
-            $direction = $direction ?? 'desc';
+            $direction = $direction ?? self::DEFAULT_DIRECTION;
             $sort = [$index . '|' . $direction];
         }
 
@@ -1423,7 +1432,7 @@ class LivewireDatatable extends Component
                     $columnName = $this->getSortString($index);
                 }
 
-                $this->query->orderByRaw($columnName . ' ' . ($direction = Str::after($sort, '|') == $index ? 'desc' : Str::after($sort, '|')));
+                $this->query->orderByRaw($columnName . ' ' . ($direction = Str::after($sort, '|') == $index ? self::DEFAULT_DIRECTION : Str::after($sort, '|')));
             }
         }
 
@@ -1648,17 +1657,17 @@ class LivewireDatatable extends Component
         }
 
         switch ($direction) {
-            case $direction === 'desc' :
+            case $direction === self::DEFAULT_DIRECTION :
                 return 'asc';
             default :
-                return 'desc';
+                return self::DEFAULT_DIRECTION;
         }
     }
 
     public function toggleMultisortDirection(string $direction): ?string
     {
         $directionState = array_search($direction, ($directions = self::ORDER_BY_DIRECTION_STATES));
-        if($directionState === false){
+        if ($directionState === false) {
             throw new Exception('Undefined direction index in togglemultisortDirection()');
         }
         return $directions[$directionState + 1];
@@ -1673,6 +1682,6 @@ class LivewireDatatable extends Component
 
     public function getIndexFromValue($q): ?int
     {
-        return (int) Str::before($q, '|');
+        return (int)Str::before($q, '|');
     }
 }
