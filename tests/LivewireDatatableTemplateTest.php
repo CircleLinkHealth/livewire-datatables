@@ -152,7 +152,7 @@ class LivewireDatatableTemplateTest extends TestCase
     }
 
     /** @test */
-    public function it_can_set_sort_from_a_property_from_column_name_and_direction()
+    public function it_can_set_sort_from_property_using_column_name_and_direction()
     {
         factory(DummyModel::class)->create();
 
@@ -168,7 +168,7 @@ class LivewireDatatableTemplateTest extends TestCase
     }
 
     /** @test */
-    public function it_can_set_sort_from_a_property_from_column_index()
+    public function it_can_set_sort_from_property_using_column_index()
     {
         factory(DummyModel::class)->create();
 
@@ -184,7 +184,7 @@ class LivewireDatatableTemplateTest extends TestCase
     }
 
     /** @test */
-    public function it_can_set_sort_from_a_property_from_column_index_and_direction()
+    public function it_can_set_sort_from_property_using_column_index_and_direction()
     {
         factory(DummyModel::class)->create();
 
@@ -200,7 +200,7 @@ class LivewireDatatableTemplateTest extends TestCase
     }
 
     /** @test */
-    public function it_can_set_multisort_from_property()
+    public function it_can_set_multisort_from_property_using_array()
     {
         factory(DummyModel::class)->create();
 
