@@ -57,7 +57,7 @@ somewhere in your CSS
 ...
 ```
 
-## Multisorting
+## Sorting by multiple columns
 
 - Set ```multisort = true``` to enable sorting by multiple columns:
 ```html
