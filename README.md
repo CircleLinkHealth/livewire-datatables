@@ -57,6 +57,30 @@ somewhere in your CSS
 ...
 ```
 
+## Multisorting
+
+- Set ```multisort = true``` to allow sorting by multiple columns:
+```html
+...
+
+<livewire:datatable model="App\User" multisort=true />
+
+...
+```
+- When ```multisort = true```, on first click to sort a column, the direction will be set to `desc`. On second click to sort the same column, the direction will change to `asc` and on the third, the direction will be set to `null` and the column will be excluded from the `orderBy` in query.
+
+## Default sort:
+- `$multisort = false`
+  - Set to sort property the column index with direction `1|asc` that should be sorted by default on component mount. Alternatively, you can pass the column name with direction `subject|asc`, or just the column index `1`.
+  
+
+- `$multisort = true`
+  - Set to sort property an array with any columns that should be sorted by default on component mount. The array values should be the column names and direction like: `['category'|desc, 'subject|asc']` or the columns index and direction like: `[1|asc, 2|desc]`.
+  
+In both cases if direction is omitted, it will default to `desc`.
+
+
+
 ## Template Syntax
 - There are many ways to modify the table by passing additional properties into the component:
 ```html
@@ -77,7 +101,8 @@ somewhere in your CSS
 |**dates**|*String\|Array* of column definitions [ and optional format in \| delimited string]|column values are formatted as per the default date format, or format can be included in string with \| separator | ```:dates="['dob\|lS F y', 'created_at']"```|
 |**times**|*String\|Array* of column definitions [optional format in \| delimited string]|column values are formatted as per the default time format, or format can be included in string with \| separator | ```'bedtime\|g:i A'```|
 |**searchable**|*String\|Array* of column names | Defines columns to be included in global search | ```searchable="name, email"```|
-|**sort**|*String* of column definition [and optional 'asc' or 'desc' (default: 'desc') in \| delimited string]|Specifies the column and direction for initial table sort. Default is column 0 descending | ```sort="name\|asc"```|
+|**sort**|*String, int or array* of column(s) definition [and optional 'asc' or 'desc' (default: 'desc') Specifies the column and direction for initial table sort. Default is column 0 descending | ```sort="name\|asc"```|
+|**multisort**|*Boolean default: false*|When set to true, sort is done using multiple columns.
 |**hide-header**|*Boolean* default: *false*|The top row of the table including the column titles is removed if this is ```true```| |
 |**hide-pagination**|*Boolean* default: *false*|Pagination controls are removed if this is ```true```| |
 |**per-page**|*Integer* default: 10|Number of rows per page| ```per-page="20"``` |
