@@ -104,6 +104,7 @@ There's 3 possible states a column can have when multisorting is enabled. Clicki
 - 1st click: column added to the sort with direction `desc`.
 - 2nd click: direction changes to `asc`.
 - 3rd click: column removed from sort. 
+### [Multiple Columns Sorting Demo](http://g.recordit.co/MoiqlC8HLf.gif)
 
 ## Component Syntax
 
