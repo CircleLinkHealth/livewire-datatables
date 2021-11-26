@@ -6,7 +6,7 @@
 ### Features
 - Use a model or query builder to supply data
 - Mutate and format columns using preset or custom callbacks
-- Sort data using column or computed column
+- Sort data using one or more columns or computed columns
 - Filter using booleans, times, dates, selects or free text
 - Create complex combined filters using the [complex query builder](#complex-query-builder)
 - Show / hide columns
@@ -57,30 +57,6 @@ somewhere in your CSS
 ...
 ```
 
-## Sorting by multiple columns
-
-- Set ```multisort = true``` to enable sorting by multiple columns:
-```html
-...
-
-<livewire:datatable model="App\User" multisort=true />
-
-...
-```
-- When ```multisort = true```, on first click to sort a column, the direction will be set to `desc`. On second click to sort the same column, the direction will change to `asc` and on the third, the direction will be set to `null` and the column will be excluded from the `orderBy` in query.
-
-## Default sort:
-- `$multisort = false`
-  - Set to sort property the column index with direction `1|asc` that should be sorted by default on component mount. Alternatively, you can pass the column name with direction `subject|asc`, or just the column index `1`.
-  
-
-- `$multisort = true`
-  - Set to sort property an array with any columns that should be sorted by default on component mount. The array values should be the column names and direction like: `['category'|desc, 'subject|asc']` or the columns index and direction like: `[1|asc, 2|desc]`.
-  
-In both cases if direction is omitted, it will default to `desc`.
-
-
-
 ## Template Syntax
 - There are many ways to modify the table by passing additional properties into the component:
 ```html
@@ -112,6 +88,22 @@ In both cases if direction is omitted, it will default to `desc`.
 |**afterTableSlot**| _String_ |blade view to be included immediately after the table in the component, which can therefore access public properties| [demo](https://livewire-datatables.com/complex) |
 ---
 
+## Sorting by multiple columns (multisorting)
+
+### Enable multisorting
+Multisorting is disabled by default. To enable it set ```multisort = true``` on your ```livewire-datatable``` component.
+```html
+...
+
+<livewire:datatable model="App\User" multisort=true />
+
+...
+```
+### How does it work?
+There's 3 possible states a column can have when multisorting is enabled. Clicking on a column will advance its state.
+- 1st click: column added to the sort with direction `desc`.
+- 2nd click: direction changes to `asc`.
+- 3rd click: column removed from sort. 
 
 ## Component Syntax
 
