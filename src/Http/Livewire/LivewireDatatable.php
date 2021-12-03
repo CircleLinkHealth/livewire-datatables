@@ -169,6 +169,7 @@ class LivewireDatatable extends Component
         $times = [],
         $searchable = [],
         $sort = null,
+        $multisort = false,
         $hideHeader = null,
         $hidePagination = null,
         $perPage = null,
@@ -179,7 +180,7 @@ class LivewireDatatable extends Component
         $params = []
     )
     {
-        foreach (['model', 'include', 'exclude', 'hide', 'dates', 'times', 'searchable', 'sort', 'hideHeader', 'hidePagination', 'exportable', 'hideable', 'beforeTableSlot', 'afterTableSlot'] as $property) {
+        foreach (['model', 'include', 'exclude', 'hide', 'dates', 'times', 'searchable', 'sort', 'multisort', 'hideHeader', 'hidePagination', 'exportable', 'hideable', 'beforeTableSlot', 'afterTableSlot'] as $property) {
             $this->$property = $this->$property ?? $$property;
         }
 
