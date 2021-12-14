@@ -485,7 +485,6 @@ class LivewireDatatable extends Component
         }
 
         $this->sort = session()->get($this->sessionStorageKey() . $this->name . '_multisort', $this->sort) ?? [];
-
     }
 
     public function getSessionStoredPerPage()
