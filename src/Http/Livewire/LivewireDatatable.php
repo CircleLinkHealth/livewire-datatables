@@ -665,8 +665,8 @@ class LivewireDatatable extends Component
         $direction = self::DEFAULT_DIRECTION;
         if (Str::contains($sortString, '|')) {
             $direction = Str::after($sortString, '|');
-            if ($direction !== 'asc' && $direction !== self::DEFAULT_DIRECTION) {
-                throw new \Exception("Invalid direction $direction given in sanitizeColumnSort() method. Allowed values: asc, desc.");
+            if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+                throw new \Exception("Invalid direction $direction given in getColumnDirection() method. Allowed values: asc, desc.");
             }
         }
 
