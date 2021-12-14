@@ -531,9 +531,9 @@ class LivewireDatatable extends Component
     public function initialiseSort()
     {
         $this->sort = ($columns = $this->defaultSort())->isNotEmpty()
-            ? array_values($columns->transform(function ($column) {
+            ? $columns->transform(function ($column) {
                 return $column['key'] . '|' . $column['direction'];
-            })->toArray())
+            })->toArray()->values()
             : collect($this->freshColumns)->reject(function ($column) {
                 return in_array($column['type'], Column::UNSORTABLE_TYPES) || $column['hidden'];
             })->transform(function ($column, $key) {
