@@ -674,8 +674,8 @@ class LivewireDatatable extends Component
     /**
      * Order the table by a given column index starting from 0.
      *
-     * @param int $index which column to sort by
-     * @param string|null $direction needs to be 'asc' or 'desc'. set to null to toggle the current direction.
+     * @param  int  $index  which column to sort by
+     * @param  string|null  $direction  needs to be 'asc' or 'desc'. set to null to toggle the current direction.
      * @return void
      */
     public function sort($index, $direction = null)
@@ -841,7 +841,7 @@ class LivewireDatatable extends Component
 
     public function doNumberFilterStart($index, $start)
     {
-        $this->activeNumberFilters[$index]['start'] = ($start != '') ? (int)$start : null;
+        $this->activeNumberFilters[$index]['start'] = ($start != '') ? (int) $start : null;
         $this->clearEmptyNumberFilter($index);
         $this->page = 1;
         $this->setSessionStoredFilters();
@@ -849,7 +849,7 @@ class LivewireDatatable extends Component
 
     public function doNumberFilterEnd($index, $end)
     {
-        $this->activeNumberFilters[$index]['end'] = ($end != '') ? (int)$end : null;
+        $this->activeNumberFilters[$index]['end'] = ($end != '') ? (int) $end : null;
         $this->clearEmptyNumberFilter($index);
         $this->page = 1;
         $this->setSessionStoredFilters();
