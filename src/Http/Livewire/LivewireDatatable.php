@@ -483,7 +483,7 @@ class LivewireDatatable extends Component
             return;
         }
 
-        session()->put([$this->sessionStorageKey() . $this->name . '_multisort' => implode(',', $this->sort)]);
+        session()->get($this->sessionStorageKey() . $this->name . '_multisort');
 
     }
 
