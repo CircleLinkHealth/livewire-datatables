@@ -530,8 +530,10 @@ class LivewireDatatable extends Component
 
     public function initialiseSort()
     {
-        $this->sort = ($columns = $this->defaultSort())->isNotEmpty()
-            ? $columns->transform(function ($column) {
+        $default = $this->defaultSort();
+        
+        $this->sort = $default->isNotEmpty()
+            ? $default->transform(function ($column) {
                 return $column['key'] . '|' . $column['direction'];
             })->values()->toArray()
             : collect($this->freshColumns)->reject(function ($column) {
