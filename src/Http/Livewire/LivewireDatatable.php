@@ -368,7 +368,7 @@ class LivewireDatatable extends Component
         $columnName = array_pop($parts);
         $relation = implode('.', $parts);
 
-        return method_exists($this->query->getModel(), $parts[0])
+        return  method_exists($this->query->getModel(), $parts[0])
             ? $this->joinRelation($relation, $columnName, $aggregate, $alias ?? $name)
             : $name;
     }
@@ -443,11 +443,11 @@ class LivewireDatatable extends Component
     protected function performJoin($table, $foreign, $other, $type = 'left')
     {
         $joins = [];
-        foreach ((array)$this->query->getQuery()->joins as $key => $join) {
+        foreach ((array) $this->query->getQuery()->joins as $key => $join) {
             $joins[] = $join->table;
         }
 
-        if (!in_array($table, $joins)) {
+        if (! in_array($table, $joins)) {
             $this->query->join($table, $foreign, '=', $other, $type);
         }
     }
@@ -680,7 +680,7 @@ class LivewireDatatable extends Component
      */
     public function sort($index, $direction = null)
     {
-        if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+        if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
             throw new \Exception("Invalid direction $direction given in sort() method. Allowed values: asc, desc.");
         }
         $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
@@ -1652,7 +1652,7 @@ class LivewireDatatable extends Component
 
     public function toggleSortDirection(string $direction): string
     {
-        if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+        if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
             throw new \Exception("Invalid direction $direction given in toggleSortDirection() method. Allowed values: asc, desc.");
         }
 
