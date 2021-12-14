@@ -88,10 +88,10 @@ somewhere in your CSS
 |**afterTableSlot**| _String_ |blade view to be included immediately after the table in the component, which can therefore access public properties| [demo](https://livewire-datatables.com/complex) |
 ---
 
-## Sorting by multiple columns (multisorting)
-
-### Enable multisorting
-Multisorting is disabled by default. To enable it set ```multisort = true``` on your ```livewire-datatable``` component.
+## Sorting by multiple columns (multisort)
+![Multisort Demo](http://g.recordit.co/C68Du9aSOC.gif "Multisort Demo")
+### Enable multisort
+Multisort is disabled by default. To enable it set ```multisort = true``` on your ```livewire-datatable``` component.
 ```html
 ...
 
@@ -100,11 +100,10 @@ Multisorting is disabled by default. To enable it set ```multisort = true``` on 
 ...
 ```
 ### How does it work?
-There's 3 possible states a column can have when multisorting is enabled. Clicking on a column will advance its state.
+There's 3 possible states a column can have when multisort is enabled. Clicking on a column will advance its state.
 - 1st click: column added to the sort with direction `desc`.
 - 2nd click: direction changes to `asc`.
 - 3rd click: column removed from sort. 
-### [Multiple Columns Sorting Demo](http://g.recordit.co/C68Du9aSOC.gif)
 
 ## Component Syntax
 
