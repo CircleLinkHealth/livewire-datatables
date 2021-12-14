@@ -484,8 +484,7 @@ class LivewireDatatable extends Component
             return;
         }
 
-        $session = session()->get($this->sessionStorageKey() . $this->name . '_multisort', $this->sort);
-        $this->sort = $session ?? [];
+        $this->sort = session()->get($this->sessionStorageKey() . $this->name . '_multisort', $this->sort) ?? [];
 
     }
 
@@ -533,29 +532,25 @@ class LivewireDatatable extends Component
     public function initialiseSort()
     {
         $default = $this->defaultSort();
+        $direction = self::DEFAULT_DIRECTION;
 
-        $this->sort = $default->isNotEmpty()
-            ? $default->transform(function ($column) {
+        if ($default->isNotEmpty()){
+            $this->sort = $default->transform(function ($column) {
                 return $column['key'] . '|' . $column['direction'];
-            })->values()->toArray()
-            : collect($this->freshColumns)->reject(function ($column) {
+            })->values()->toArray();
+            return;
+        }
+
+        if (is_int($this->sort) || is_string($this->sort)){
+            $columnIndex = $this->getIndexFromValue($this->sort);
+            $direction = $this->getColumnDirection($this->sort);
+        } else{
+            $columnIndex = collect($this->freshColumns)->reject(function ($column) {
                 return in_array($column['type'], Column::UNSORTABLE_TYPES) || $column['hidden'];
-            })->transform(function ($column, $key) {
-                $direction = self::DEFAULT_DIRECTION;
-                if (is_string($this->sort)) {
-                    $direction = $this->getColumnDirection($this->sort);
-                }
-                return $key . '|' . $direction;
-            })->when($this->multisort, function ($columnIndicesWithDirection) {
-                return $columnIndicesWithDirection->toArray();
-            }, function ($columnIndicesWithDirection) {
-                if (is_int($this->sort) || is_string($this->sort)) {
-                    return [$columnIndicesWithDirection->toArray()[Str::before($this->sort, '|')]];
-                }
+            })->keys()->first();
+        }
 
-                return [$columnIndicesWithDirection->first()];
-            });
-
+        $this->sort = [$columnIndex . '|' . $direction];
         $this->getSessionStoredSort();
     }
 
