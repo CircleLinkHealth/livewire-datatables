@@ -537,6 +537,7 @@ class LivewireDatatable extends Component
             $this->sort = $default->transform(function ($column) {
                 return $column['key'] . '|' . $column['direction'];
             })->values()->toArray();
+            $this->getSessionStoredSort();
             return;
         }
 
