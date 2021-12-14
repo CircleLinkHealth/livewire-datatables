@@ -68,7 +68,7 @@ class LivewireDatatable extends Component
     public $persistSort = true;
     public $persistPerPage = true;
     public $persistFilters = true;
-    public $multisort = false;
+    public $multisort;
 
     /**
      * @var array List your groups and the corresponding label (or translation) here.
@@ -531,7 +531,7 @@ class LivewireDatatable extends Component
     public function initialiseSort()
     {
         $default = $this->defaultSort();
-        
+
         $this->sort = $default->isNotEmpty()
             ? $default->transform(function ($column) {
                 return $column['key'] . '|' . $column['direction'];
