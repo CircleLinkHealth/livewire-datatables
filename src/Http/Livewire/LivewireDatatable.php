@@ -710,7 +710,7 @@ class LivewireDatatable extends Component
             }
 
             $this->page = 1;
-            session()->put([$key . $this->name . '_multisort' => implode(',', $this->sort)]);
+            session()->put([$key . $this->name . '_multisort' => $this->sort]);
             return;
         }
 
