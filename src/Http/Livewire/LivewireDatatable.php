@@ -700,6 +700,7 @@ class LivewireDatatable extends Component
                 if ($direction === null) {
                     $toggledDirection = $this->toggleMultisortDirection($this->getColumnDirection($this->sort[$sortIndex]));
                     unset($this->sort[$sortIndex]);
+                    $this->sort = array_values($this->sort);
                     $sort = $index . '|' . $toggledDirection;
                     if ($toggledDirection === null) {
                         return;
