@@ -639,7 +639,7 @@ class LivewireDatatable extends Component
                 return Str::before($column['select'], ' AS ');
                 break;
 
-            default:
+             default:
                 return $dbTable == 'pgsql' || $dbTable == 'sqlsrv'
                     ? new Expression('"' . $column['name'] . '"')
                     : new Expression('`' . $column['name'] . '`');
