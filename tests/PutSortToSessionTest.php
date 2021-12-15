@@ -48,7 +48,7 @@ class PutSortToSessionTest extends TestCase
         $this->assertSession(3, ['0|desc', '1|asc', '2|desc'], $multisortSessionKey);
     }
 
-    private function assertSession(int $expectedCount, array $columnsIndexDirection, string $sessionKey = 'livewire_datatable_sort')
+    private function assertSession(int $expectedCount, array $columnsIndexDirection, string $sessionKey)
     {
         $session = session()->get($sessionKey);
         $this->assertCount($expectedCount, $session);
