@@ -1684,4 +1684,9 @@ class LivewireDatatable extends Component
     {
         return (int)Str::before($q, '|');
     }
+
+    public function forgetSortSession()
+    {
+        session()->forget($this->sessionStorageKey() . $this->name . '_multisort');
+    }
 }
