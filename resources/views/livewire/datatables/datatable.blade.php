@@ -7,7 +7,7 @@
     <div class="relative">
         <div class="flex justify-between items-center mb-1">
             @if(isset($this->multisort) && $this->multisort === true && count($this->sort) > 1)
-                <button wire:loading.class="opacity-50" x-on:click="refreshWindow" wire:click="forgetSortSession"
+                <button wire:loading.class="opacity-50" wire:click="forgetSortSession"
                         class="px-3 py-2 border border-blue-400 rounded-md bg-white text-blue-500 text-xs leading-4 font-medium uppercase tracking-wider hover:bg-blue-200 focus:outline-none">
                     <div class="flex items-center h-2">
                         {{ __('Reset Columns Sort')}}
@@ -213,8 +213,3 @@
     @endif
     <span class="hidden text-sm leading-5 text-gray-900 text-left text-center text-right bg-gray-50 bg-gray-100 bg-yellow-100"></span>
 </div>
-<script>
-    function refreshWindow(){
-        location.reload();
-    }
-</script>
