@@ -642,7 +642,7 @@ class LivewireDatatable extends Component
             default:
                 return $dbTable == 'pgsql' || $dbTable == 'sqlsrv'
                     ? new Expression('"' . $column['name'] . '"')
-                    : '`' . $column['name'] . '`';
+                    : new Expression('`' . $column['name'] . '`');
                 break;
         }
     }
