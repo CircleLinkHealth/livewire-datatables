@@ -533,7 +533,7 @@ class LivewireDatatable extends Component
         $default = $this->defaultSort();
         $direction = self::DEFAULT_DIRECTION;
 
-        if ($default->isNotEmpty()){
+        if ($default->isNotEmpty()) {
             $this->sort = $default->transform(function ($column) {
                 return $column['key'] . '|' . $column['direction'];
             })->values()->toArray();
@@ -541,10 +541,10 @@ class LivewireDatatable extends Component
             return;
         }
 
-        if (is_int($this->sort) || is_string($this->sort)){
+        if (is_int($this->sort) || is_string($this->sort)) {
             $columnIndex = $this->getIndexFromValue($this->sort);
             $direction = $this->getColumnDirection($this->sort);
-        } else{
+        } else {
             $columnIndex = collect($this->freshColumns)->reject(function ($column) {
                 return in_array($column['type'], Column::UNSORTABLE_TYPES) || $column['hidden'];
             })->keys()->first();
@@ -691,7 +691,7 @@ class LivewireDatatable extends Component
                 } else {
                     $sort = $index . '|' . $direction;
                 }
-                array_unshift($this->sort, $sort);
+                $this->sort[] = $sort;
             } else {
                 $sortIndex = $columnsWithDirection->keys()->first();
                 if ($direction === null) {
@@ -702,7 +702,7 @@ class LivewireDatatable extends Component
                     if ($toggledDirection === null) {
                         return;
                     }
-                    array_unshift($this->sort, $sort);
+                    $this->sort[] = $sort;
                 } else {
                     $this->sort[$sortIndex] =
                         $index . '|' . $direction;
