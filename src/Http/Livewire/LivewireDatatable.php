@@ -532,7 +532,7 @@ class LivewireDatatable extends Component
         $default = $this->defaultSort();
         $direction = self::DEFAULT_DIRECTION;
 
-        if ($default->isNotEmpty()){
+        if ($default->isNotEmpty()) {
             $this->sort = $default->transform(function ($column) {
                 return $column['key'] . '|' . $column['direction'];
             })->values()->toArray();
@@ -540,10 +540,10 @@ class LivewireDatatable extends Component
             return;
         }
 
-        if (is_int($this->sort) || is_string($this->sort)){
+        if (is_int($this->sort) || is_string($this->sort)) {
             $columnIndex = $this->getIndexFromValue($this->sort);
             $direction = $this->getColumnDirection($this->sort);
-        } else{
+        } else {
             $columnIndex = collect($this->freshColumns)->reject(function ($column) {
                 return in_array($column['type'], Column::UNSORTABLE_TYPES) || $column['hidden'];
             })->keys()->first();
@@ -638,10 +638,10 @@ class LivewireDatatable extends Component
                 return Str::before($column['select'], ' AS ');
                 break;
 
-            default:
+             default:
                 return $dbTable == 'pgsql' || $dbTable == 'sqlsrv'
-                    ? '"' . $column['name'] . '"'
-                    : '`' . $column['name'] . '`';
+                    ? new Expression('"' . $column['name'] . '"')
+                    : new Expression('`' . $column['name'] . '`');
                 break;
         }
     }
@@ -661,7 +661,7 @@ class LivewireDatatable extends Component
         $direction = self::DEFAULT_DIRECTION;
         if (Str::contains($sortString, '|')) {
             $direction = Str::after($sortString, '|');
-            if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+            if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
                 throw new \Exception("Invalid direction $direction given in getColumnDirection() method. Allowed values: asc, desc.");
             }
         }
@@ -678,7 +678,7 @@ class LivewireDatatable extends Component
      */
     public function sort($index, $direction = null)
     {
-        if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+        if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
             throw new \Exception("Invalid direction $direction given in sort() method. Allowed values: asc, desc.");
         }
         $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
@@ -690,7 +690,7 @@ class LivewireDatatable extends Component
                 } else {
                     $sort = $index . '|' . $direction;
                 }
-                array_unshift($this->sort, $sort);
+                $this->sort[] = $sort;
             } else {
                 $sortIndex = $columnsWithDirection->keys()->first();
                 if ($direction === null) {
@@ -701,7 +701,7 @@ class LivewireDatatable extends Component
                     if ($toggledDirection === null) {
                         return;
                     }
-                    array_unshift($this->sort, $sort);
+                    $this->sort[] = $sort;
                 } else {
                     $this->sort[$sortIndex] =
                         $index . '|' . $direction;
@@ -856,7 +856,7 @@ class LivewireDatatable extends Component
 
     public function clearEmptyNumberFilter($index)
     {
-        if ((!isset($this->activeNumberFilters[$index]['start']) || $this->activeNumberFilters[$index]['start'] == '') && (!isset($this->activeNumberFilters[$index]['end']) || $this->activeNumberFilters[$index]['end'] == '')) {
+        if ((! isset($this->activeNumberFilters[$index]['start']) || $this->activeNumberFilters[$index]['start'] == '') && (! isset($this->activeNumberFilters[$index]['end']) || $this->activeNumberFilters[$index]['end'] == '')) {
             $this->removeNumberFilter($index);
         }
         $this->page = 1;
@@ -929,7 +929,7 @@ class LivewireDatatable extends Component
         }
 
         if ($this->freshColumns[$index]['raw']) {
-            return [(string)$this->freshColumns[$index]['sort']];
+            return [(string) $this->freshColumns[$index]['sort']];
         }
 
         return Arr::wrap($this->getSelectStatements()[$index]);
@@ -937,7 +937,7 @@ class LivewireDatatable extends Component
 
     public function addScopeSelectFilter($query, $index, $value)
     {
-        if (!isset($this->freshColumns[$index]['scopeFilter'])) {
+        if (! isset($this->freshColumns[$index]['scopeFilter'])) {
             return;
         }
 
@@ -946,7 +946,7 @@ class LivewireDatatable extends Component
 
     public function addScopeNumberFilter($query, $index, $value)
     {
-        if (!isset($this->freshColumns[$index]['scopeFilter'])) {
+        if (! isset($this->freshColumns[$index]['scopeFilter'])) {
             return;
         }
 
@@ -1073,9 +1073,9 @@ class LivewireDatatable extends Component
         return Str::contains($column['name'], ':')
             ? Str::after(explode('.', $column['name'])[1], ':')
             : (
-            $column['type'] === 'string'
-                ? 'group_concat'
-                : 'count'
+                $column['type'] === 'string'
+                    ? 'group_concat'
+                    : 'count'
             );
     }
 
@@ -1085,9 +1085,9 @@ class LivewireDatatable extends Component
 
         $this->query->addSelect(
             $this->getSelectStatements(true, $export)
-                ->filter()
-                ->flatten()
-                ->toArray()
+            ->filter()
+            ->flatten()
+            ->toArray()
         );
 
         $this->addGlobalSearch()
@@ -1312,7 +1312,7 @@ class LivewireDatatable extends Component
 
     public function addTextFilters()
     {
-        if (!count($this->activeTextFilters)) {
+        if (! count($this->activeTextFilters)) {
             return $this;
         }
 
@@ -1340,7 +1340,7 @@ class LivewireDatatable extends Component
 
     public function addNumberFilters()
     {
-        if (!count($this->activeNumberFilters)) {
+        if (! count($this->activeNumberFilters)) {
             return $this;
         }
         $this->query->where(function ($query) {
@@ -1369,13 +1369,13 @@ class LivewireDatatable extends Component
 
     public function addDateRangeFilter()
     {
-        if (!count($this->activeDateFilters)) {
+        if (! count($this->activeDateFilters)) {
             return $this;
         }
 
         $this->query->where(function ($query) {
             foreach ($this->activeDateFilters as $index => $filter) {
-                if (!((isset($filter['start']) && $filter['start'] != '') || (isset($filter['end']) && $filter['end'] != ''))) {
+                if (! ((isset($filter['start']) && $filter['start'] != '') || (isset($filter['end']) && $filter['end'] != ''))) {
                     break;
                 }
                 $query->whereBetween($this->getColumnFilterStatement($index)[0], [
@@ -1390,7 +1390,7 @@ class LivewireDatatable extends Component
 
     public function addTimeRangeFilter()
     {
-        if (!count($this->activeTimeFilters)) {
+        if (! count($this->activeTimeFilters)) {
             return $this;
         }
 
@@ -1485,7 +1485,7 @@ class LivewireDatatable extends Component
                     $row->$name = $this->callbacks[$name]($value, $row);
                 }
 
-                if ($this->search && !config('livewire-datatables.suppress_search_highlights') && $this->searchableColumns()->firstWhere('name', $name)) {
+                if ($this->search && ! config('livewire-datatables.suppress_search_highlights') && $this->searchableColumns()->firstWhere('name', $name)) {
                     $row->$name = $this->highlight($row->$name, $this->search);
                 }
             }
@@ -1546,10 +1546,10 @@ class LivewireDatatable extends Component
         $output = substr($value, stripos($value, $string), strlen($string));
 
         if ($value instanceof View) {
-            return $value->with(['value' => str_ireplace($string, (string)view('datatables::highlight', ['slot' => $output]), $value->gatherData()['value'] ?? $value->gatherData()['slot'])]);
+            return $value->with(['value' => str_ireplace($string, (string) view('datatables::highlight', ['slot' => $output]), $value->gatherData()['value'] ?? $value->gatherData()['slot'])]);
         }
 
-        return str_ireplace($string, (string)view('datatables::highlight', ['slot' => $output]), $value);
+        return str_ireplace($string, (string) view('datatables::highlight', ['slot' => $output]), $value);
     }
 
     public function render()
@@ -1595,7 +1595,7 @@ class LivewireDatatable extends Component
         $this->resolveCheckboxColumnName(collect($this->freshColumns)->firstWhere('type', 'checkbox'));
 
         return $this->query->reorder()->get()->map(function ($row) {
-            return (string)$row->checkbox_attribute;
+            return (string) $row->checkbox_attribute;
         });
     }
 
@@ -1651,7 +1651,7 @@ class LivewireDatatable extends Component
 
     public function toggleSortDirection(string $direction): string
     {
-        if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+        if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
             throw new \Exception("Invalid direction $direction given in toggleSortDirection() method. Allowed values: asc, desc.");
         }
 
@@ -1682,5 +1682,11 @@ class LivewireDatatable extends Component
     public function getIndexFromValue($q): ?int
     {
         return (int)Str::before($q, '|');
+    }
+
+    public function forgetSortSession()
+    {
+        session()->forget($this->sessionStorageKey() . $this->name . '_multisort');
+        $this->sort = [];
     }
 }

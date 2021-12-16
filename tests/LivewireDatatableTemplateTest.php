@@ -2,6 +2,7 @@
 
 namespace Mediconesystems\LivewireDatatables\Tests;
 
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Mediconesystems\LivewireDatatables\Http\Livewire\LivewireDatatable;
 use Mediconesystems\LivewireDatatables\Tests\Models\DummyModel;
@@ -222,4 +223,24 @@ class LivewireDatatableTemplateTest extends TestCase
         $this->assertNull($subject->direction);
     }
 
+    /** @test */
+    public function it_can_forget_multisort_session_on_demand()
+    {
+        factory(DummyModel::class)->create();
+
+        $subject = Livewire::test(LivewireDatatable::class, [
+            'model' => DummyModel::class,
+            'multisort' => true,
+        ]);
+
+        $this->assertEquals('Mediconesystems\LivewireDatatables\Tests\Models\DummyModel', $subject->model);
+        $this->assertIsArray($subject->columns);
+
+        $subject->assertDontSee('Reset Columns Sort');
+        $subject->call('sort', 1);
+        $subject->assertSee('Reset Columns Sort');
+        $subject->assertSessionHas($multisortSessionKey = Str::snake(Str::afterLast(LivewireDatatable::class, '\\')) . '_multisort');
+        $subject->call('forgetSortSession');
+        $subject->assertSessionMissing($multisortSessionKey);
+    }
 }
