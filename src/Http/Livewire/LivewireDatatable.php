@@ -661,7 +661,7 @@ class LivewireDatatable extends Component
         $direction = self::DEFAULT_DIRECTION;
         if (Str::contains($sortString, '|')) {
             $direction = Str::after($sortString, '|');
-            if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+            if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
                 throw new \Exception("Invalid direction $direction given in getColumnDirection() method. Allowed values: asc, desc.");
             }
         }
@@ -678,7 +678,7 @@ class LivewireDatatable extends Component
      */
     public function sort($index, $direction = null)
     {
-        if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+        if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
             throw new \Exception("Invalid direction $direction given in sort() method. Allowed values: asc, desc.");
         }
         $key = Str::snake(Str::afterLast(get_called_class(), '\\'));
@@ -1651,7 +1651,7 @@ class LivewireDatatable extends Component
 
     public function toggleSortDirection(string $direction): string
     {
-        if (!in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
+        if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
             throw new \Exception("Invalid direction $direction given in toggleSortDirection() method. Allowed values: asc, desc.");
         }
 
