@@ -178,8 +178,7 @@ class LivewireDatatable extends Component
         $beforeTableSlot = false,
         $afterTableSlot = false,
         $params = []
-    )
-    {
+    ) {
         foreach (['model', 'include', 'exclude', 'hide', 'dates', 'times', 'searchable', 'sort', 'multisort', 'hideHeader', 'hidePagination', 'exportable', 'hideable', 'beforeTableSlot', 'afterTableSlot'] as $property) {
             $this->$property = $this->$property ?? $$property;
         }
@@ -369,7 +368,7 @@ class LivewireDatatable extends Component
         $columnName = array_pop($parts);
         $relation = implode('.', $parts);
 
-        return method_exists($this->query->getModel(), $parts[0])
+        return  method_exists($this->query->getModel(), $parts[0])
             ? $this->joinRelation($relation, $columnName, $aggregate, $alias ?? $name)
             : $name;
     }
