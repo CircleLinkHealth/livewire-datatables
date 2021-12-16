@@ -1681,7 +1681,7 @@ class LivewireDatatable extends Component
 
     public function getIndexFromValue($q): ?int
     {
-        return (int)Str::before($q, '|');
+        return (int) Str::before($q, '|');
     }
 
     public function forgetSortSession()
