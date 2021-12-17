@@ -135,15 +135,8 @@ class ColumnSet
 
     public function sort($sort)
     {
-        if (is_array($sort)) {
-            foreach ($sort as $arg) {
-                $this->sort($arg);
-            }
-            return $this;
-        }
-
-        if ($sort && $column = $this->columns->first(function ($column, $key) use ($sort) {
-            return Str::after($column->name, '.') === ($sort = Str::before($sort, '|')) || $sort === $key;
+        if ($sort && $column = $this->columns->first(function ($column) use ($sort) {
+            return Str::after($column->name, '.') === Str::before($sort, '|');
         })) {
             $column->defaultSort(Str::of($sort)->contains('|') ? Str::after($sort, '|') : null);
         }

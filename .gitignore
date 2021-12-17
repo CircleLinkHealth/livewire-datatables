@@ -5,5 +5,3 @@ vendor
 coverage
 .DS_Store
 .vscode/
-.idea/
-.phpunit.result.cache

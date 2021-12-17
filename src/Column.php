@@ -120,7 +120,7 @@ class Column
         return $this;
     }
 
-    public function defaultSort(?string $direction = 'desc')
+    public function defaultSort($direction = true)
     {
         $this->defaultSort = $direction;
 
