@@ -1667,6 +1667,10 @@ class LivewireDatatable extends Component
                     $this->query->orderBy(DB::raw('FIELD(id,' . implode(',', $this->pinnedRecords) . ')'), 'DESC');
                 }
 
+                if ($columnName instanceof Expression) {
+                    $columnName = $columnName->getValue(DB::connection()->getQueryGrammar());
+                }
+
                 $this->query->orderByRaw($columnName . ' ' . ($direction = Str::after($sort, '|') == $index ? self::DEFAULT_DIRECTION : Str::after($sort, '|')));
             }
         }
