@@ -602,7 +602,7 @@ class LivewireDatatable extends Component
             })->keys()->first();
         }
 
-        $this->direction = $this->defaultSort() && $this->defaultSort()['direction'] === 'asc';
+        $this->direction = $default->isNotEmpty() && $default->first()['direction'] === 'asc';
 
         $this->sort = [$columnIndex . '|' . $direction];
         $this->getSessionStoredSort();
