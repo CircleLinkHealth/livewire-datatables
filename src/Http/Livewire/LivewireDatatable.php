@@ -356,6 +356,10 @@ class LivewireDatatable extends Component
     public function resolveAdditionalSelects($column)
     {
         $selects = collect($column->additionalSelects)->map(function ($select) use ($column) {
+            if ($select instanceof Expression) {
+                return $select;
+            }
+
             return Str::contains($select, '.')
                 ? $this->resolveColumnName($column, $select)
                 : $this->query->getModel()->getTable() . '.' . $select;
@@ -1667,9 +1671,9 @@ class LivewireDatatable extends Component
                     $this->query->orderBy(DB::raw('FIELD(id,' . implode(',', $this->pinnedRecords) . ')'), 'DESC');
                 }
 
-                if ($columnName instanceof Expression) {
-                    $columnName = $columnName->getValue(DB::connection()->getQueryGrammar());
-                }
+//                if ($columnName instanceof Expression) {
+//                    $columnName = $columnName->getValue(DB::connection()->getQueryGrammar());
+//                }
 
                 $this->query->orderByRaw($columnName . ' ' . ($direction = Str::after($sort, '|') == $index ? self::DEFAULT_DIRECTION : Str::after($sort, '|')));
             }
