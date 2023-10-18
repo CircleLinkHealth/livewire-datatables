@@ -1422,6 +1422,11 @@ class LivewireDatatable extends Component
                                         $query->orWhereRaw('LOWER(' . (Str::contains(mb_strtolower($column), 'concat') ? '' : $this->tablePrefix) . $col . ') like ?', '%' . mb_strtolower($search) . '%');
                                     }
                                 }, function ($query) use ($search, $column) {
+
+                                    if ($column instanceof  Expression) {
+                                        $column = $column->getValue(DB::connection()->getQueryGrammar());
+                                    }
+
                                     $query->orWhereRaw('LOWER(' . (Str::contains(mb_strtolower($column), 'concat') ? '' : $this->tablePrefix) . $column . ') like ?', '%' . mb_strtolower($search) . '%');
                                 });
                             }
