@@ -147,7 +147,7 @@ class LivewireDatatable extends Component
      * This events allows to control the options of the datatable from foreign livewire components
      * by using $emit.
      *
-     * @example $this->emit('applyToTable', ['perPage' => 25]); // in any other livewire component on the same page
+     * @example $this->dispatch('applyToTable', ['perPage' => 25]); // in any other livewire component on the same page
      */
     public function applyToTable($options)
     {
@@ -1319,6 +1319,7 @@ class LivewireDatatable extends Component
     public function complexQuery($rules)
     {
         $this->complexQuery = $rules;
+        $this->setPage(1);
     }
 
     public function addComplexQuery()
@@ -1330,8 +1331,6 @@ class LivewireDatatable extends Component
         $this->query->where(function ($query) {
             $this->processNested($this->complexQuery, $query);
         });
-
-        $this->setPage(1);
 
         return $this;
     }
@@ -1800,7 +1799,7 @@ class LivewireDatatable extends Component
 
     public function render()
     {
-        $this->emit('refreshDynamic');
+        $this->dispatch('refreshDynamic');
 
         if ($this->persistPerPage) {
             session()->put([$this->sessionStorageKey() . '_perpage' => $this->perPage]);

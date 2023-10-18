@@ -4,8 +4,7 @@
         <div wire:key="{{ $key }}">
             @if($rule['type'] === 'rule')
                 @include('datatables::complex-query-rule', ['parentIndex' => $key, 'rule' => $rule])
-            @elseif($rule['type'] === 'group')
-                <div x-data="{
+            @elseif($rule['type'] === 'group')<div x-data="{
                     key: '{{ collect(explode('.', $key))->join(".content.") . ".content" }}',
                     source: () => document.querySelector('[dragging]'),
                     dragstart: (e, key) => {
@@ -42,7 +41,7 @@
                                 <div class="mr-8">
                                     <label class="block uppercase tracking-wide text-xs font-bold py-1 rounded flex justify-between">Logic</label>
                                     <select
-                                        wire:model="rules.{{ collect(explode('.', $key))->join(".content.") }}.logic"
+                                        wire:model.live="rules.{{ collect(explode('.', $key))->join(".content.") }}.logic"
                                         class="w-24 text-sm leading-4 block rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                                     >
                                         <option value="and">AND</option>
