@@ -13,6 +13,6 @@ trait WithCallbacks
             ->where(Str::after($key, '.'), $rowId)
             ->update([$column => $value]);
 
-        $this->dispatch('fieldEdited', $rowId, $column);
+        $this->emit('fieldEdited', $rowId, $column);
     }
 }
