@@ -762,6 +762,10 @@ class LivewireDatatable extends Component
                 return Str::before($column['select'][0], ' AS ');
 
             case $column['select']:
+                if ($column['select'] instanceof Expression) {
+                    return Str::before($column['select']->getValue(DB::connection()->getQueryGrammar()), ' AS ');
+                }
+
                 return Str::before($column['select'], ' AS ');
 
              default:
