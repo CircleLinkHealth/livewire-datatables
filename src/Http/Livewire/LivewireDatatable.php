@@ -751,7 +751,11 @@ class LivewireDatatable extends Component
 
     public function getSortString(int $index, string $dbTable)
     {
-        $column = $this->freshColumns[$index];
+        $column = Arr::get($this->freshColumns, $index);
+
+        if (! $column) {
+            $column = $this->freshColumns[0];
+        }
 
         switch (true) {
             case $column['sort']:
