@@ -77,6 +77,8 @@ class LivewireDatatable extends Component
     public $actions;
     public $massActionOption;
 
+    public $multisort;
+
     /**
      * @var array List your groups and the corresponding label (or translation) here.
      *            The label can be a i18n placeholder like 'app.my_string' and it will be automatically translated via __().
