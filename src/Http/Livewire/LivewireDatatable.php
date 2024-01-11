@@ -152,7 +152,7 @@ class LivewireDatatable extends Component
     public function applyToTable($options)
     {
         if (isset($options['sort'])) {
-            $this->sort($options['sort'], $options['direction'] ?? null);
+            $this->sortColumn($options['sort'], $options['direction'] ?? null);
         }
 
         if (isset($options['hiddenColumns']) && is_array($options['hiddenColumns'])) {
@@ -837,7 +837,7 @@ class LivewireDatatable extends Component
      * @param string|null $direction needs to be 'asc' or 'desc'. set to null to toggle the current direction.
      * @return void
      */
-    public function sort($index, $direction = null)
+    public function sortColumn($index, $direction = null)
     {
         if (! in_array($direction, self::ORDER_BY_DIRECTION_STATES)) {
             throw new \Exception("Invalid direction $direction given in sort() method. Allowed values: asc, desc.");
