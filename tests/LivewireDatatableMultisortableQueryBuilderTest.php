@@ -118,7 +118,6 @@ class LivewireDatatableMultisortableQueryBuilderTest extends TestCase
     public function it_creates_a_multisort_query_builder_for_has_many_relation_column_with_specific_aggregate()
     {
         factory(DummyModel::class)->create()->dummy_has_many()->saveMany(factory(DummyHasManyModel::class, 2)->make());
-
         $subject = new LivewireDatatable(1);
         $subject->multisort = true;
         $subject->mount(DummyModel::class, ['id', 'dummy_has_many.id:avg']);
